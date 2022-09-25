@@ -42,8 +42,8 @@ int main(int argc, char* argv[])
   /* Pack the container in the window */
   gtk_container_add (GTK_CONTAINER (window), grid);
 
-  g_signal_connect(ATK_OBJECT(LogIn_button), "clicked", G_CALLBACK(log_in),NULL);
-  g_signal_connect(ATK_OBJECT(SignUp_button), "clicked", G_CALLBACK(sign_up),NULL);
+  g_signal_connect(LogIn_button, "clicked", G_CALLBACK(log_in),NULL);
+  g_signal_connect(SignUp_button, "clicked", G_CALLBACK(sign_up),NULL);
 
   gtk_grid_attach (GTK_GRID (grid), LogIn_button, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID (grid), SignUp_button, 2, 0, 1, 1);
