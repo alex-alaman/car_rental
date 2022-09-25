@@ -1,54 +1,61 @@
-#include <gtk/gtk.h>
-  
-void log_in(GtkWidget* widget, gpointer data)
-{
-    // printf equivalent in GTK+
-    g_print("\nlog in");
-}
+#include<gtk/gtk.h>
 
-void sign_up(GtkWidget* widget, gpointer data)
-{
-    // printf equivalent in GTK+
-    g_print("\nsign up");
-}
-  
-void destroy(GtkWidget* widget, gpointer data)
-{
-    gtk_main_quit();
-}
-  
-int main(int argc, char* argv[])
-{
-    GtkWidget* window;
-    GtkWidget* LogIn_button;
-    GtkWidget* SignUp_button;
-    GtkWidget* grid;
-    gtk_init(&argc, &argv);
-  
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  
-    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
-    /* Let's set the border width of the window to 20.
-    * You may play with the value and see the
-    * difference. */
-    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
-  
-    LogIn_button = gtk_button_new_with_label("Log in");
-    SignUp_button = gtk_button_new_with_label("Sign up");
+GtkWidget *emailLabel, *emailEntry, *PasswordLabel, *PasswordEntry, *signupBtn, *grid;
 
-  /* Here we construct the container that is going pack our buttons */
-  grid = gtk_grid_new ();
+void signup_button_clicked(GtkWidget *wid,gpointer data)
+ {
+      const gchar *emailData = gtk_entry_get_text(GTK_ENTRY(emailEntry)); 
+      gtk_label_set_text(GTK_LABEL(data),emailData); 
+      gtk_entry_set_text(GTK_ENTRY(emailEntry),""); 
+      gtk_entry_set_text(GTK_ENTRY(PasswordEntry),"");
+ } 
+ 
+static void activate (GtkApplication* app, gpointer user_data)
+ {
+     GtkWidget *window;
+     window = gtk_application_window_new (app);
+     gtk_window_set_title (GTK_WINDOW (window), "User Input");
+     gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
 
-  /* Pack the container in the window */
-  gtk_container_add (GTK_CONTAINER (window), grid);
+     GtkWidget *showEmail; 
+     emailLabel = gtk_label_new("Email:"); 
+     emailEntry = gtk_entry_new(); 
+     gtk_entry_set_placeholder_text(GTK_ENTRY(emailEntry),"Email");
+     GIcon *icon; 
+     GFile *path; 
+     path = g_file_new_for_path("D:/path/emailicon.png"); 
+     icon = g_file_icon_new(path); 
+     gtk_entry_set_icon_from_gicon(GTK_ENTRY(emailEntry),GTK_ENTRY_ICON_PRIMARY,icon); 
 
-  g_signal_connect(LogIn_button, "clicked", G_CALLBACK(log_in),NULL);
-  g_signal_connect(SignUp_button, "clicked", G_CALLBACK(sign_up),NULL);
+     PasswordLabel = gtk_label_new("Password:");
+     PasswordEntry = gtk_entry_new();
+     gtk_entry_set_placeholder_text(GTK_ENTRY(PasswordEntry),"Password");
+     gtk_entry_set_visibility(GTK_ENTRY(PasswordEntry),FALSE);
+     signupBtn = gtk_button_new_with_label("Sign Up");
+     showEmail = gtk_label_new("");
 
-  gtk_grid_attach (GTK_GRID (grid), LogIn_button, 0, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID (grid), SignUp_button, 2, 0, 1, 1);
+     g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
 
-  gtk_widget_show_all(window);
-  gtk_main();
-  return 0;
-}
+     GtkWidget *box; box = gtk_box_new(GTK_ORIENTATION_VERTICAL,20);
+     gtk_box_pack_start(GTK_BOX(box),emailLabel,FALSE,FALSE,0);
+     gtk_box_pack_start(GTK_BOX(box),emailEntry,FALSE,FALSE,0);
+     gtk_box_pack_start(GTK_BOX(box),PasswordLabel,FALSE,FALSE,0);
+     gtk_box_pack_start(GTK_BOX(box),PasswordEntry,FALSE,FALSE,0); 
+     gtk_box_pack_start(GTK_BOX(box),signupBtn,FALSE,FALSE,0); 
+     gtk_box_pack_start(GTK_BOX(box),showEmail,FALSE,FALSE,0); 
+
+     gtk_container_add(GTK_CONTAINER(window),box); 
+     gtk_widget_show_all (window);
+ } 
+
+
+ int main(int argc,char **argv)
+ {
+     GtkApplication *app;
+     int status;
+     app = gtk_application_new ("com.hackthedeveloper", G_APPLICATION_FLAGS_NONE);
+     g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+     status = g_application_run(G_APPLICATION(app), argc, argv);
+     g_object_unref (app);
+     return status;
+ }

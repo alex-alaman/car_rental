@@ -15,13 +15,14 @@ struct masina
     int rent_price;
 };
 
-struct client
+/* struct client
 {
     char nume[SIZE];
     char prenume[SIZE];
     char email[SIZE];
     char pass[SIZE];
     int an_nastere;
+    int client_type; //1-to rent, 2- renter
 };
 
 struct renter
@@ -31,4 +32,4 @@ struct renter
     char email[SIZE];
     char pass[SIZE];
     int an_nastere;
-};
+}; */
