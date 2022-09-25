@@ -1,0 +1,5 @@
+1. Imbunatatire GUI
+2. Creare pagina renter / client
+3. creare id pentru masina, renter si client pentru a stii cine inchiriaza ce masina si a cui
+4. status de inchiriare/rezervare a masinii
+5.imbunatatire cod

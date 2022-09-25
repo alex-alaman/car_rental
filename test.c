@@ -1,46 +1,54 @@
 #include <gtk/gtk.h>
-
-static void
-print_hello (GtkWidget *widget,
-             gpointer   data)
+  
+void log_in(GtkWidget* widget, gpointer data)
 {
-  g_print ("Hello World\n");
+    // printf equivalent in GTK+
+    g_print("\nlog in");
 }
 
-int
-main (int   argc,
-      char *argv[])
+void sign_up(GtkWidget* widget, gpointer data)
 {
-  GtkBuilder *builder;
-  GObject *window;
-  GObject *button;
-  GError *error = NULL;
+    // printf equivalent in GTK+
+    g_print("\nsign up");
+}
+  
+void destroy(GtkWidget* widget, gpointer data)
+{
+    gtk_main_quit();
+}
+  
+int main(int argc, char* argv[])
+{
+    GtkWidget* window;
+    GtkWidget* LogIn_button;
+    GtkWidget* SignUp_button;
+    GtkWidget* grid;
+    gtk_init(&argc, &argv);
+  
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+    /* Let's set the border width of the window to 20.
+    * You may play with the value and see the
+    * difference. */
+    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
+  
+    LogIn_button = gtk_button_new_with_label("Log in");
+    SignUp_button = gtk_button_new_with_label("Sign up");
 
-  gtk_init (&argc, &argv);
+  /* Here we construct the container that is going pack our buttons */
+  grid = gtk_grid_new ();
 
-  /* Construct a GtkBuilder instance and load our UI description */
-  builder = gtk_builder_new ();
-  if (gtk_builder_add_from_file (builder, "test.ui", &error) == 0)
-    {
-      g_printerr ("Error loading file: %s\n", error->message);
-      g_clear_error (&error);
-      return 1;
-    }
+  /* Pack the container in the window */
+  gtk_container_add (GTK_CONTAINER (window), grid);
 
-  /* Connect signal handlers to the constructed widgets. */
-  window = gtk_builder_get_object (builder, "window");
-  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+  g_signal_connect(ATK_OBJECT(LogIn_button), "clicked", G_CALLBACK(log_in),NULL);
+  g_signal_connect(ATK_OBJECT(SignUp_button), "clicked", G_CALLBACK(sign_up),NULL);
 
-  button = gtk_builder_get_object (builder, "button1");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  gtk_grid_attach (GTK_GRID (grid), LogIn_button, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid), SignUp_button, 2, 0, 1, 1);
 
-  button = gtk_builder_get_object (builder, "button2");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
-
-  button = gtk_builder_get_object (builder, "quit");
-  g_signal_connect (button, "clicked", G_CALLBACK (gtk_main_quit), NULL);
-
-  gtk_main ();
-
+  gtk_widget_show_all(window);
+  gtk_main();
   return 0;
 }

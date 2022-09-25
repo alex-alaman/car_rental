@@ -1,22 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "structs.c"
 #define SIZE 15
 #define LINE_SIZE 55
 
 void add_a_car_to_rent_menu(int nr_masini);
 void file_verification(FILE *file);
 
-/*masina -> marca, model, an, cp , combustibil*/
-struct masina
-{
-    char marca[SIZE];
-    char model[SIZE];
-    char combustibil[SIZE];
-    int an;
-    int cp;
-    int rent_price;
-};
 struct masina *masini;
 
 void afisare_masina(struct masina m)

@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include "functii.c"
+#include "menu.c"
 
-int main(){
+
+int main(int argc, char* argv[]){
     int choice, nr_masini = 0;
+    create_menu(argc, argv);
     printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
     scanf("%d", &choice);
     while (choice!=0)
