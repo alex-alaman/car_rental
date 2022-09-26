@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]){
     int choice, nr_masini = 0;
     create_menu(argc, argv);
-    printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
+    /* printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
     scanf("%d", &choice);
     while (choice!=0)
     {
@@ -21,12 +21,8 @@ int main(int argc, char* argv[]){
         default:
             break;
         }
-       /* if(choice == 1)
-            rent_car_menu();
-        else{
-            add_car_to_rent_menu();
-        } */
         printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
         scanf("%d", &choice);
-    }
+    } */
+    printf("\nOK\n");
 }

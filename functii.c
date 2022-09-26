@@ -86,6 +86,27 @@ void file_verification(FILE *file)
     }
 }
 
+const char* find_pass_email(FILE *file, const char email[SIZE])
+{
+    file_verification(file);
+    char line[LINE_SIZE], *p;
+    while (fgets(line, LINE_SIZE, file) != NULL)
+    {
+        p = strtok(line, ",");
+        while (p)
+        {
+            if(strcmp(email,p)==0)
+            {
+                 p = strtok(NULL, ","); //order is email,pass
+                 return p; //return password
+                
+            }
+            p = strtok(NULL, ",");
+        }
+    }
+    return "";
+}
+
 void afisare_masini(int nr_masini)
 {
     for(int i=1;i<=nr_masini;i++)
