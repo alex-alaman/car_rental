@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "gtk_client_menu.c"
 
 int create_menu(int argc, char *argv[]);
 void log_in_menu(GtkWidget *irelevant, gpointer widget);
@@ -29,6 +30,7 @@ void show_sign_up_error(gpointer window)
     GtkWidget *LogIn;
     hide_menu(error, window);
     errorWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title (GTK_WINDOW (errorWindow), "Sign up ERROR");
     errorGrid = gtk_grid_new();
     gtk_container_set_border_width(GTK_CONTAINER(errorWindow), 50);
     gtk_container_add(GTK_CONTAINER(errorWindow), errorGrid);
@@ -56,6 +58,7 @@ void show_log_in_error(gpointer window)
     GtkWidget *SignUp;
     hide_menu(error, window);
     errorWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title (GTK_WINDOW (errorWindow), "Log in ERROR");
     errorGrid = gtk_grid_new();
     gtk_container_set_border_width(GTK_CONTAINER(errorWindow), 50);
     gtk_container_add(GTK_CONTAINER(errorWindow), errorGrid);
@@ -75,7 +78,7 @@ void show_log_in_error(gpointer window)
     gtk_widget_show_all(errorWindow);
 }
 
-void add_user_to_DB(GtkWidget *irelavant, gpointer window)
+void add_user_to_DB(GtkWidget *irelevant, gpointer window)
 {
     FILE *file = fopen("client_DB.txt", "a");
     const char *name = gtk_entry_get_text(GTK_ENTRY(nameEntry));
@@ -86,6 +89,7 @@ void add_user_to_DB(GtkWidget *irelavant, gpointer window)
     if (find_pass_email(fopen("client_DB.txt", "r"), email) == "")
     {
         fprintf(file, "%s,%s,%s,%s,%d\n", email, pass, name, lastname, year);
+        log_in_menu(irelevant, window);
         fflush(file); // force-put the data in the file
     }
     else
@@ -95,7 +99,7 @@ void add_user_to_DB(GtkWidget *irelavant, gpointer window)
     }
 }
 
-void check_email(GtkWidget *irelavant, gpointer window)
+void check_email(GtkWidget *irelevant, gpointer window)
 {
     FILE *file = fopen("client_DB.txt", "r");
     const char *email = gtk_entry_get_text(GTK_ENTRY(emailEntry));
@@ -103,16 +107,18 @@ void check_email(GtkWidget *irelavant, gpointer window)
     const char *passFound = find_pass_email(file, email);
     if (strcmp(pass, passFound) == 0)
     {
+        hide_menu(irelevant, window);
         g_print("\nLogin OK");
-        // show_user_UI()
+        show_UI();
     }
     else
     {
         show_log_in_error(window);
-        if (passFound == "")
+        //error types 
+        /*if (passFound == "")
             g_print("\nEmail Not Found");
         else
-            g_print("\nWrong Password");
+            g_print("\nWrong Password");*/
     }
 }
 
@@ -126,6 +132,7 @@ void log_in_menu(GtkWidget *irelevant, gpointer widget)
     GtkWidget *back;
 
     log_in_menu_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title (GTK_WINDOW (log_in_menu_window), "Log in");
     g_signal_connect(log_in_menu_window, "destroy", G_CALLBACK(destroy), NULL);
     gtk_container_set_border_width(GTK_CONTAINER(log_in_menu_window), 200);
     gtk_widget_hide(widget);
@@ -170,6 +177,7 @@ void sign_up_menu(GtkWidget *irelevant, gpointer widget)
     GtkWidget *sign;
 
     sign_up_menu_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title (GTK_WINDOW (sign_up_menu_window), "Sign up");
     gtk_container_set_border_width(GTK_CONTAINER(sign_up_menu_window), 200);
     g_signal_connect(G_OBJECT(sign_up_menu_window), "destroy", G_CALLBACK(destroy), NULL);
     sign_up_menu_grid = gtk_grid_new();
@@ -200,7 +208,7 @@ void sign_up_menu(GtkWidget *irelevant, gpointer widget)
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), widget);
     g_signal_connect(sign, "clicked", G_CALLBACK(add_user_to_DB), sign_up_menu_window);
     g_signal_connect(sign, "clicked", G_CALLBACK(hide_menu), sign_up_menu_window);
-    // g_signal_connect(sign, "clicked", G_CALLBACK(create_menu), sign_up_menu_window);
+    //g_signal_connect(sign, "clicked", G_CALLBACK(log_in_menu), sign_up_menu_window);
 
     gtk_grid_attach(GTK_GRID(sign_up_menu_grid), name, 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(sign_up_menu_grid), nameEntry, 1, 0, 2, 1);

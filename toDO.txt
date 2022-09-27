@@ -1,2 +1,2 @@
-afisare eroare pe gui la creare cont cu email existent
-sau afisare de pagina noua cu optiunea de "would u like to log in instead?"
+client page to be made
+rezolvare sign up
