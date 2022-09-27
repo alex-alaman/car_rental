@@ -1,5 +1,2 @@
-1. Imbunatatire GUI
-2. Creare pagina renter / client
-3. creare id pentru masina, renter si client pentru a stii cine inchiriaza ce masina si a cui
-4. status de inchiriare/rezervare a masinii
-5.imbunatatire cod
+afisare eroare pe gui la creare cont cu email existent
+sau afisare de pagina noua cu optiunea de "would u like to log in instead?"

@@ -1,6 +1,8 @@
 #include <gtk/gtk.h>
 
 int create_menu(int argc, char *argv[]);
+void log_in_menu(GtkWidget *irelevant, gpointer widget);
+void sign_up_menu(GtkWidget *irelevant, gpointer widget);
 GtkWidget *emailEntry, *passEntry, *nameEntry, *lastnameEntry, *yearEntry;
 
 void destroy(GtkWidget *widget, gpointer data)
@@ -18,7 +20,62 @@ void hide_menu(GtkWidget *irelavant, gpointer widget)
     gtk_widget_hide(widget);
 }
 
-void add_user_to_DB(GtkWidget *irelavant, gpointer data)
+void show_sign_up_error(gpointer window)
+{
+    GtkWidget *error;
+    GtkWidget *errorWindow;
+    GtkWidget *errorGrid;
+    GtkWidget *TryAgain;
+    GtkWidget *LogIn;
+    hide_menu(error, window);
+    errorWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    errorGrid = gtk_grid_new();
+    gtk_container_set_border_width(GTK_CONTAINER(errorWindow), 50);
+    gtk_container_add(GTK_CONTAINER(errorWindow), errorGrid);
+
+    error = gtk_label_new("This email already exists. Would you like to try again or sign in?");
+    TryAgain = gtk_button_new_with_label("Try again");
+    LogIn = gtk_button_new_with_label("Log in");
+
+    g_signal_connect(LogIn, "clicked", G_CALLBACK(log_in_menu), errorWindow);
+    g_signal_connect(TryAgain, "clicked", G_CALLBACK(sign_up_menu), errorWindow);
+
+    gtk_grid_attach(GTK_GRID(errorGrid), error, 0, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(errorGrid), TryAgain, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(errorGrid), LogIn, 1, 1, 1, 1);
+
+    gtk_widget_show_all(errorWindow);
+}
+
+void show_log_in_error(gpointer window)
+{
+    GtkWidget *error;
+    GtkWidget *errorWindow;
+    GtkWidget *errorGrid;
+    GtkWidget *TryAgain;
+    GtkWidget *SignUp;
+    hide_menu(error, window);
+    errorWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    errorGrid = gtk_grid_new();
+    gtk_container_set_border_width(GTK_CONTAINER(errorWindow), 50);
+    gtk_container_add(GTK_CONTAINER(errorWindow), errorGrid);
+
+    error = gtk_label_new("Email or password wrong");
+    //i choose this type of error instead of case sensitive error like email is wrong
+    TryAgain = gtk_button_new_with_label("Try again");
+    SignUp = gtk_button_new_with_label("Sign Up");
+
+    g_signal_connect(SignUp, "clicked", G_CALLBACK(sign_up_menu), errorWindow);
+    g_signal_connect(TryAgain, "clicked", G_CALLBACK(log_in_menu), errorWindow);
+
+    gtk_grid_attach(GTK_GRID(errorGrid), error, 0, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(errorGrid), TryAgain, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(errorGrid), SignUp, 1, 1, 1, 1);
+
+    gtk_widget_show_all(errorWindow);
+}
+
+void add_user_to_DB(GtkWidget *irelavant, gpointer window)
 {
     FILE *file = fopen("client_DB.txt", "a");
     const char *name = gtk_entry_get_text(GTK_ENTRY(nameEntry));
@@ -29,28 +86,34 @@ void add_user_to_DB(GtkWidget *irelavant, gpointer data)
     if (find_pass_email(fopen("client_DB.txt", "r"), email) == "")
     {
         fprintf(file, "%s,%s,%s,%s,%d\n", email, pass, name, lastname, year);
-        fflush(file); //force-put the data in the file
+        fflush(file); // force-put the data in the file
     }
-    else{
-        g_print("email NOT OK");
-        /* gtk_entry_set_text(GTK_ENTRY(emailEntry),""); 
-        gtk_entry_set_text(GTK_ENTRY(nameEntry),"");
-        gtk_entry_set_text(GTK_ENTRY(lastnameEntry),"");
-        gtk_entry_set_text(GTK_ENTRY(yearEntry),""); */
+    else
+    {
+        // g_print("email NOT OK");
+        show_sign_up_error(window);
     }
 }
 
-void check_email(GtkWidget *irelavant, gpointer data)
+void check_email(GtkWidget *irelavant, gpointer window)
 {
     FILE *file = fopen("client_DB.txt", "r");
     const char *email = gtk_entry_get_text(GTK_ENTRY(emailEntry));
     const char *pass = gtk_entry_get_text(GTK_ENTRY(passEntry));
-    if (strcmp(pass, find_pass_email(file, email)) == 0)
+    const char *passFound = find_pass_email(file, email);
+    if (strcmp(pass, passFound) == 0)
     {
         g_print("\nLogin OK");
+        // show_user_UI()
     }
     else
-        g_print("\nLogin NOT OK");
+    {
+        show_log_in_error(window);
+        if (passFound == "")
+            g_print("\nEmail Not Found");
+        else
+            g_print("\nWrong Password");
+    }
 }
 
 void log_in_menu(GtkWidget *irelevant, gpointer widget)
@@ -79,7 +142,7 @@ void log_in_menu(GtkWidget *irelevant, gpointer widget)
 
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), log_in_menu_window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), widget);
-    g_signal_connect(log_in_button, "clicked", G_CALLBACK(check_email), NULL);
+    g_signal_connect(log_in_button, "clicked", G_CALLBACK(check_email), log_in_menu_window);
 
     log_in_menu_grid = gtk_grid_new();
 
@@ -135,9 +198,9 @@ void sign_up_menu(GtkWidget *irelevant, gpointer widget)
 
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), sign_up_menu_window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), widget);
-    g_signal_connect(sign, "clicked", G_CALLBACK(add_user_to_DB), NULL);
+    g_signal_connect(sign, "clicked", G_CALLBACK(add_user_to_DB), sign_up_menu_window);
     g_signal_connect(sign, "clicked", G_CALLBACK(hide_menu), sign_up_menu_window);
-    g_signal_connect(sign, "clicked", G_CALLBACK(create_menu), sign_up_menu_window);
+    // g_signal_connect(sign, "clicked", G_CALLBACK(create_menu), sign_up_menu_window);
 
     gtk_grid_attach(GTK_GRID(sign_up_menu_grid), name, 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(sign_up_menu_grid), nameEntry, 1, 0, 2, 1);
