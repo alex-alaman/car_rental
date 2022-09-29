@@ -1,35 +1,24 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #define SIZE 15
 #define LINE_SIZE 55
 
-/*masina -> marca, model, an, cp , combustibil*/
+//GtkWidget *brandEntry, *modelEntry, *yearEntry, *h_powerEntry, *rent_priceEntry;
 struct masina
 {
-    char marca[SIZE];
+    char brand[SIZE];
     char model[SIZE];
-    char combustibil[SIZE];
-    int an;
-    int cp;
+    char gas[SIZE];
+    int renterID;
+    int year;
+    int h_power;
     int rent_price;
 };
 
-/* struct client
+struct Client
 {
-    char nume[SIZE];
-    char prenume[SIZE];
+    char name[SIZE];
+    char lastname[SIZE];
     char email[SIZE];
     char pass[SIZE];
-    int an_nastere;
-    int client_type; //1-to rent, 2- renter
+    int b_year;
 };
-
-struct renter
-{
-    char nume[SIZE];
-    char prenume[SIZE];
-    char email[SIZE];
-    char pass[SIZE];
-    int an_nastere;
-}; */

@@ -2,27 +2,19 @@
 #include "functii.c"
 #include "menu.c"
 
+int create_menu(int argc, char *argv[])
+{
+    gtk_init(&argc, &argv);
+    main_menu();
+    gtk_main();
+    return 0;  
+}
 
 int main(int argc, char* argv[]){
-    int choice, nr_masini = 0;
+    add_cars_from_DB();
+    add_clients_from_DB();
     create_menu(argc, argv);
-    /* printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
-    scanf("%d", &choice);
-    while (choice!=0)
-    {
-        switch (choice)
-        {
-        case 1:
-            rent_car_menu();
-            break;
-        case 2:
-            add_car_to_rent_menu();
-            break;
-        default:
-            break;
-        }
-        printf("\n0.Stop\n1.Rent a car\n2.Add a car to rent\n");
-        scanf("%d", &choice);
-    } */
-    printf("\nOK\n");
+    free(masini);
+    free(clients);
+    return 0;
 }
