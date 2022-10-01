@@ -2,27 +2,22 @@
 #include "main_menu_functions.c"
 #include "client_menu_functions.c"
 #include <string.h>
+#include <gdk/gdkkeysyms.h>
 
 void main_menu()
 {
-    GtkWidget *window;
-    GtkWidget *LogIn_button;
-    GtkWidget *SignUp_button;
-    GtkWidget *grid;
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *LogIn_button = gtk_button_new_with_label("Log in");
+    GtkWidget *SignUp_button = gtk_button_new_with_label("Sign up");
+    GtkWidget *grid = gtk_grid_new();
 
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "MENU");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
+    gtk_container_add(GTK_CONTAINER(window), grid);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
 
     g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
-    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
-
-    LogIn_button = gtk_button_new_with_label("Log in");
-    SignUp_button = gtk_button_new_with_label("Sign up");
-
-    grid = gtk_grid_new();
-
-    gtk_container_add(GTK_CONTAINER(window), grid);
-
     g_signal_connect(LogIn_button, "clicked", G_CALLBACK(log_in_menu), (gpointer)window);
     g_signal_connect(SignUp_button, "clicked", G_CALLBACK(sign_up_menu), (gpointer)window);
 
@@ -32,115 +27,105 @@ void main_menu()
     gtk_widget_show_all(window);
 }
 
-void log_in_menu(GtkWidget *irelevant, gpointer widget)
+void log_in_menu(GtkWidget *irelevant, gpointer last_window)
 {
-    GtkWidget *log_in_menu_window;
-    GtkWidget *log_in_menu_grid;
-    GtkWidget *email;
-    GtkWidget *pass;
-    GtkWidget *log_in_button;
-    GtkWidget *back;
+    gtk_widget_hide(last_window);
 
-    log_in_menu_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(log_in_menu_window), "Log in");
-    g_signal_connect(log_in_menu_window, "destroy", G_CALLBACK(destroy), NULL);
-    gtk_container_set_border_width(GTK_CONTAINER(log_in_menu_window), 200);
-    gtk_widget_hide(widget);
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *grid = gtk_grid_new();
+    GtkWidget *email = gtk_label_new("Email :");
+    GtkWidget *pass = gtk_label_new("Password : ");
+    GtkWidget *log_in_button = gtk_button_new_with_label("Log in");
+    GtkWidget *back = gtk_button_new_with_label("Inapoi");
 
-    email = gtk_label_new("Email :");
-    pass = gtk_label_new("Password : ");
-    back = gtk_button_new_with_label("Inapoi");
-    log_in_button = gtk_button_new_with_label("Log in");
+    gtk_window_set_title(GTK_WINDOW(window), "Log in");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
     emailEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(emailEntry), "Email");
     passEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
     gtk_entry_set_visibility(GTK_ENTRY(passEntry), FALSE);
 
-    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), log_in_menu_window);
-    g_signal_connect(back, "clicked", G_CALLBACK(show_menu), widget);
-    g_signal_connect(log_in_button, "clicked", G_CALLBACK(check_email), log_in_menu_window);
+    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_logIN), window);
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(show_menu), last_window);
+    g_signal_connect(log_in_button, "clicked", G_CALLBACK(check_email), window);
 
-    log_in_menu_grid = gtk_grid_new();
 
-    gtk_container_add(GTK_CONTAINER(log_in_menu_window), log_in_menu_grid);
+    gtk_grid_attach(GTK_GRID(grid), email, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), emailEntry, 1, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), pass, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), passEntry, 1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), back, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), log_in_button, 1, 2, 1, 1);
 
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), email, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), emailEntry, 1, 0, 2, 1);
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), pass, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), passEntry, 1, 1, 2, 1);
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), back, 0, 2, 1, 1);
-    gtk_grid_attach(GTK_GRID(log_in_menu_grid), log_in_button, 1, 2, 1, 1);
-    gtk_widget_show_all(log_in_menu_window);
+    gtk_widget_show_all(window);
 }
 
-void sign_up_menu(GtkWidget *irelevant, gpointer widget)
+void sign_up_menu(GtkWidget *irelevant, gpointer last_window)
 {
-    GtkWidget *sign_up_menu_window;
-    GtkWidget *sign_up_menu_grid;
-    GtkWidget *name;
-    GtkWidget *lastname;
-    GtkWidget *email;
-    GtkWidget *pass;
-    GtkWidget *year;
-    GtkWidget *back;
-    GtkWidget *sign;
+    gtk_widget_hide(last_window);
 
-    sign_up_menu_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(sign_up_menu_window), "Sign up");
-    gtk_container_set_border_width(GTK_CONTAINER(sign_up_menu_window), 200);
-    // g_signal_connect(G_OBJECT(sign_up_menu_window), "destroy", G_CALLBACK(destroy), NULL);
-    g_signal_connect(sign_up_menu_window, "destroy", G_CALLBACK(destroy), NULL);
-    sign_up_menu_grid = gtk_grid_new();
-    gtk_container_add(GTK_CONTAINER(sign_up_menu_window), sign_up_menu_grid);
-    gtk_widget_hide(widget);
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *grid = gtk_grid_new();
+    GtkWidget *name = gtk_label_new("NUME : ");
+    GtkWidget *lastname = gtk_label_new("PRENUME : ");
+    GtkWidget *email = gtk_label_new("EMAIL : ");
+    GtkWidget *pass = gtk_label_new("PAROLA : ");
+    GtkWidget *year = gtk_label_new("AN NASTERE : ");
+    GtkWidget *back = gtk_button_new_with_label("Inapoi");
+    GtkWidget *sign = gtk_button_new_with_label("Sign up");
+
+    gtk_window_set_title(GTK_WINDOW(window), "Sign up");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_container_add(GTK_CONTAINER(window), grid);
 
     emailEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(emailEntry), "Email");
     passEntry = gtk_entry_new();
     gtk_entry_set_visibility(GTK_ENTRY(passEntry), FALSE);
+    gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
     nameEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(nameEntry), "Name");
     lastnameEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(lastnameEntry), "Last Name");
     yearEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(yearEntry), "Birth Year");
-    gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
 
-    sign = gtk_button_new_with_label("Sign up");
-    name = gtk_label_new("NUME : ");
-    lastname = gtk_label_new("PRENUME : ");
-    email = gtk_label_new("EMAIL : ");
-    pass = gtk_label_new("PAROLA : ");
-    year = gtk_label_new("AN NASTERE : ");
-    back = gtk_button_new_with_label("Inapoi");
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(show_menu), last_window);
+    g_signal_connect(sign, "clicked", G_CALLBACK(add_user), window);
+    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_signUP), window);
 
-    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), sign_up_menu_window);
-    g_signal_connect(back, "clicked", G_CALLBACK(show_menu), widget);
-    g_signal_connect(sign, "clicked", G_CALLBACK(add_user), sign_up_menu_window);
-    g_signal_connect(sign, "clicked", G_CALLBACK(hide_menu), sign_up_menu_window);
-    // g_signal_connect(sign, "clicked", G_CALLBACK(log_in_menu), sign_up_menu_window);
+    gtk_grid_attach(GTK_GRID(grid), name, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), nameEntry, 1, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), lastname, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), lastnameEntry, 1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), email, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), emailEntry, 1, 2, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), pass, 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), passEntry, 1, 3, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), year, 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), yearEntry, 1, 4, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), back, 0, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), sign, 1, 5, 1, 1);
 
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), name, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), nameEntry, 1, 0, 2, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), lastname, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), lastnameEntry, 1, 1, 2, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), email, 0, 2, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), emailEntry, 1, 2, 2, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), pass, 0, 3, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), passEntry, 1, 3, 2, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), year, 0, 4, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), yearEntry, 1, 4, 2, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), back, 0, 5, 1, 1);
-    gtk_grid_attach(GTK_GRID(sign_up_menu_grid), sign, 1, 5, 1, 1);
-    gtk_widget_show_all(sign_up_menu_window);
+    gtk_widget_show_all(window);
 }
 
 void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
 {
     gtk_widget_hide(lastWindow);
+
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     GtkWidget *grid = gtk_grid_new();
     GtkWidget *error = gtk_label_new("No cars to rent");
     GtkWidget *message = gtk_label_new("Would you like to see all cars available or a detailed search?");
@@ -148,11 +133,15 @@ void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
     GtkWidget *SearchCars = gtk_button_new_with_label("Detailed search");
     GtkWidget *back = gtk_button_new_with_label("Back");
 
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
 
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
     gtk_window_set_title(GTK_WINDOW(window), "Rent Car Menu");
     gtk_container_set_border_width(GTK_CONTAINER(window), 100);
+
     if (nr_cars == 0)
     {
         g_print("\nNo cars for rent");
@@ -169,11 +158,10 @@ void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
     gtk_widget_show_all(window);
 }
 
-void add_car_to_rent_menu(GtkWidget* irelevant, gpointer lastWindow)
+void add_car_to_rent_menu(GtkWidget *irelevant, gpointer lastWindow)
 {
     gtk_widget_hide(lastWindow);
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     GtkWidget *grid = gtk_grid_new();
     GtkWidget *brand = gtk_label_new("Brand: ");
     GtkWidget *model = gtk_label_new("Model: ");
@@ -183,6 +171,12 @@ void add_car_to_rent_menu(GtkWidget* irelevant, gpointer lastWindow)
     GtkWidget *gas = gtk_label_new("Gas: ");
     GtkWidget *back = gtk_button_new_with_label("Back");
     GtkWidget *add = gtk_button_new_with_label("Add car");
+
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_window_set_title(GTK_WINDOW(window), "Add Car to Rent Menu");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 100);
+    gtk_container_add(GTK_CONTAINER(window), grid);
 
     brandEntry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(brandEntry), "Brand");
@@ -198,14 +192,11 @@ void add_car_to_rent_menu(GtkWidget* irelevant, gpointer lastWindow)
     gtk_entry_set_placeholder_text(GTK_ENTRY(gasEntry), "Gas Type");
 
     g_signal_connect(add, "clicked", G_CALLBACK(add_car), window);
-    g_signal_connect(add, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_addCar), window);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
 
-    gtk_container_add(GTK_CONTAINER(window), grid);
-
-    gtk_window_set_title(GTK_WINDOW(window), "Add Car to Rent Menu");
-    gtk_container_set_border_width(GTK_CONTAINER(window), 100);
     gtk_grid_attach(GTK_GRID(grid), brand, 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), brandEntry, 1, 0, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), model, 0, 1, 1, 1);
@@ -223,36 +214,42 @@ void add_car_to_rent_menu(GtkWidget* irelevant, gpointer lastWindow)
 
     gtk_widget_show_all(window);
 
-    //g_print("\nAdd a car");
+    // g_print("\nAdd a car");
 }
 
 void show_UI()
 {
-    GtkWidget *UIwindow;
-    GtkWidget *UIgrid;
-    GtkWidget *Message;
-    GtkWidget *RentCar;
-    GtkWidget *AddCarToRent;
-    g_print("\nclient poz:%d", client_poz);
-    UIwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(UIwindow, "destroy", G_CALLBACK(destroy), NULL);
-    gtk_container_set_border_width(GTK_CONTAINER(UIwindow), 200);
-    gtk_window_set_title(GTK_WINDOW(UIwindow), "Account");
-
-    UIgrid = gtk_grid_new();
-    gtk_container_add(GTK_CONTAINER(UIwindow), UIgrid);
-    RentCar = gtk_button_new_with_label("Rent a car");
-    g_signal_connect(RentCar, "clicked", G_CALLBACK(rent_car_menu), UIwindow);
-    AddCarToRent = gtk_button_new_with_label("Add a car to rent");
-    g_signal_connect(AddCarToRent, "clicked", G_CALLBACK(add_car_to_rent_menu), UIwindow);
     char message[100] = "Hello there ";
     strcat(message, clients[client_poz].name);
-    Message = gtk_label_new(message);
 
-    gtk_grid_attach(GTK_GRID(UIgrid), Message, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(UIgrid), RentCar, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(UIgrid), AddCarToRent, 1, 1, 1, 1);
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *grid = gtk_grid_new();
+    GtkWidget *Message = gtk_label_new(message);
+    GtkWidget *RentCar = gtk_button_new_with_label("Rent a car");
+    GtkWidget *AddCarToRent = gtk_button_new_with_label("Add a car to rent");
+    GtkWidget *LogOut = gtk_button_new_with_label("Log Out");
 
-    gtk_widget_show_all(UIwindow);
-    g_print("\nsuntem la UI");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
+    gtk_window_set_title(GTK_WINDOW(window), "Account");
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_widget_show_all(window);
+
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+    g_signal_connect(RentCar, "clicked", G_CALLBACK(rent_car_menu), window);
+    g_signal_connect(LogOut, "clicked", G_CALLBACK(main_menu), window);
+    g_signal_connect(LogOut, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(AddCarToRent, "clicked", G_CALLBACK(add_car_to_rent_menu), window);
+
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
+    gtk_grid_attach(GTK_GRID(grid), Message, 0, 0, 3, 1);
+    gtk_grid_attach(GTK_GRID(grid), RentCar, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), AddCarToRent, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), LogOut, 2, 1, 1, 1);
+
+    gtk_widget_show_all(window);
+
+    // g_print("\nsuntem la UI");
+    // g_print("\nclient poz:%d", client_poz);
 }

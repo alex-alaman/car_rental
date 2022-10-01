@@ -6,17 +6,17 @@
 #define SIZE 15
 #define LINE_SIZE 55
 
-void add_client_to_array(struct Client client);
+client_t add_client_to_array(client_t client);
 
 int nr_cars = 0, client_nr = 0, client_poz;
 
 void add_a_car_to_rent_menu(int nr_masini);
 void file_verification(FILE *file);
 
-struct masina *masini;
-struct Client *clients;
+masina_t *masini;
+client_t *clients;
 
-/* void afisare_masina(struct masina m)
+/* void afisare_masina(masina_t m)
 {
     printf("\nMarca: %s\n", m.marca);
     printf("Model: %s\n", m.model);
@@ -26,12 +26,12 @@ struct Client *clients;
     printf("Rent Price: %d\n", m.rent_price);
 } */
 
-void add_clients_from_DB()
+client_t add_clients_from_DB()
 {
     FILE *file = fopen("client_DB.txt", "r");
     file_verification(file);
     char line[LINE_SIZE], *p;
-    struct Client client;
+    client_t client;
     int i = 1;
     while (fgets(line, LINE_SIZE, file) != NULL)
     {
@@ -68,7 +68,7 @@ void add_clients_from_DB()
     fclose(file);
 }
 
-void update_cars_DB()
+masina_t update_cars_DB()
 {
     FILE *file = fopen("cars_DB.txt", "w");
     file_verification(file);
@@ -77,7 +77,7 @@ void update_cars_DB()
     fclose(file);
 }
 
-void update_clients_DB()
+client_t update_clients_DB()
 {
     FILE *file = fopen("client_DB.txt", "w");
     file_verification(file);
@@ -86,13 +86,13 @@ void update_clients_DB()
     fclose(file);
 }
 
-void add_client_to_array(struct Client client)
+client_t add_client_to_array(client_t client)
 {
     clients = realloc(clients, (client_nr + 1) * sizeof(client));
     clients[client_nr] = client;
 }
 
-void add_client_to_DB(struct Client client)
+client_t add_client_to_DB(client_t client)
 {
     FILE *file = fopen("client_DB.txt", "a");
     file_verification(file);
@@ -100,13 +100,13 @@ void add_client_to_DB(struct Client client)
     fflush(file);
 }
 
-void add_car_to_array(struct masina m)
+masina_t add_car_to_array(masina_t m)
 {
     masini = realloc(masini, (nr_cars + 1) * sizeof(m));
     masini[nr_cars] = m;
 }
 
-void add_car_to_DB(struct masina m)
+masina_t add_car_to_DB(masina_t m)
 {
     FILE *file = fopen("cars_DB.txt", "a");
     file_verification(file);
@@ -114,12 +114,12 @@ void add_car_to_DB(struct masina m)
     fflush(file);
 }
 
-void add_cars_from_DB()
+masina_t add_cars_from_DB()
 {
     FILE *file = fopen("cars_DB.txt", "r");
     file_verification(file);
     char line[LINE_SIZE], *p;
-    struct masina m;
+    masina_t m;
     int i = 1;
     while (fgets(line, LINE_SIZE, file) != NULL)
     {
@@ -148,7 +148,7 @@ void add_cars_from_DB()
                 m.rent_price = atoi(p);
                 break;
             case 7:
-                strcpy(m.renterID, p);
+                m.renterID = atoi(p);
                 break;
             default:
                 break;
