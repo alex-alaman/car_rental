@@ -16,15 +16,15 @@ void file_verification(FILE *file);
 masina_t *masini;
 client_t *clients;
 
-/* void afisare_masina(masina_t m)
+ void afisare_masina(masina_t m)
 {
-    printf("\nMarca: %s\n", m.marca);
+    printf("\nMarca: %s\n", m.brand);
     printf("Model: %s\n", m.model);
-    printf("Combustibil: %s\n", m.combustibil);
-    printf("An fabricatie: %d\n", m.an);
-    printf("Cai Putere: %d\n", m.cp);
+    printf("An fabricatie: %d\n", m.year);
+    printf("Cai Putere: %d\n", m.h_power);
+    printf("Combustibil: %s\n", m.gas);
     printf("Rent Price: %d\n", m.rent_price);
-} */
+} 
 
 client_t add_clients_from_DB()
 {

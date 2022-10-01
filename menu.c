@@ -50,12 +50,11 @@ void log_in_menu(GtkWidget *irelevant, gpointer last_window)
     gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
     gtk_entry_set_visibility(GTK_ENTRY(passEntry), FALSE);
 
-    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_logIN), window);
+    g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_logIN), window);
     g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), last_window);
     g_signal_connect(log_in_button, "clicked", G_CALLBACK(check_email), window);
-
 
     gtk_grid_attach(GTK_GRID(grid), email, 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), emailEntry, 1, 0, 2, 1);
@@ -103,7 +102,7 @@ void sign_up_menu(GtkWidget *irelevant, gpointer last_window)
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), last_window);
     g_signal_connect(sign, "clicked", G_CALLBACK(add_user), window);
-    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_signUP), window);
+    g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_signUP), window);
 
     gtk_grid_attach(GTK_GRID(grid), name, 0, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), nameEntry, 1, 0, 2, 1);
@@ -121,9 +120,14 @@ void sign_up_menu(GtkWidget *irelevant, gpointer last_window)
     gtk_widget_show_all(window);
 }
 
+void showCars()
+{
+    for(int i=1;i<=nr_cars;i++)
+        afisare_masina(masini[i]);
+}
+
 void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
 {
-    gtk_widget_hide(lastWindow);
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *grid = gtk_grid_new();
@@ -133,9 +137,11 @@ void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
     GtkWidget *SearchCars = gtk_button_new_with_label("Detailed search");
     GtkWidget *back = gtk_button_new_with_label("Back");
 
+    // g_signal_connect(window, "destroy", G_CALLBACK(hide_menu), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
+    g_signal_connect(ShowCars, "clicked", G_CALLBACK(showCars), window);
 
     gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
     gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
@@ -149,6 +155,7 @@ void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
     }
     else
     {
+        gtk_widget_hide(lastWindow);
         gtk_container_add(GTK_CONTAINER(window), grid);
         gtk_grid_attach(GTK_GRID(grid), message, 0, 0, 4, 1);
         gtk_grid_attach(GTK_GRID(grid), ShowCars, 1, 1, 1, 1);
@@ -192,7 +199,7 @@ void add_car_to_rent_menu(GtkWidget *irelevant, gpointer lastWindow)
     gtk_entry_set_placeholder_text(GTK_ENTRY(gasEntry), "Gas Type");
 
     g_signal_connect(add, "clicked", G_CALLBACK(add_car), window);
-    g_signal_connect (window, "key_press_event", G_CALLBACK (on_key_press_addCar), window);
+    g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_addCar), window);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
     g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
@@ -223,17 +230,36 @@ void show_UI()
     strcat(message, clients[client_poz].name);
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *Rgrid = gtk_grid_new();
+    GtkWidget *Lbox = gtk_box_new(TRUE, 1);
     GtkWidget *grid = gtk_grid_new();
     GtkWidget *Message = gtk_label_new(message);
     GtkWidget *RentCar = gtk_button_new_with_label("Rent a car");
     GtkWidget *AddCarToRent = gtk_button_new_with_label("Add a car to rent");
+
+    GtkWidget *settings = gtk_button_new_with_label("Settings");
+    GtkWidget *account = gtk_button_new_with_label("Account");
+    GtkWidget *yourCars = gtk_button_new_with_label("Your Cars");
+    GtkWidget *rentedCars = gtk_button_new_with_label("Rented Cars");
     GtkWidget *LogOut = gtk_button_new_with_label("Log Out");
 
-    gtk_container_set_border_width(GTK_CONTAINER(window), 200);
-    gtk_window_set_title(GTK_WINDOW(window), "Account");
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
+    gtk_window_set_title(GTK_WINDOW(window), "Welcome");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(Rgrid), 30);
+    gtk_grid_set_column_spacing(GTK_GRID(Rgrid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(Rgrid), 8);
+    gtk_grid_set_row_homogeneous(GTK_GRID(Rgrid), TRUE);
+    gtk_grid_set_column_homogeneous(GTK_GRID(Rgrid), TRUE);
+
     gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
     gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
-    gtk_widget_show_all(window);
+    gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
+    gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
+
+    gtk_widget_set_hexpand(window, TRUE);
+    gtk_widget_set_vexpand(window, TRUE);
 
     g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
     g_signal_connect(RentCar, "clicked", G_CALLBACK(rent_car_menu), window);
@@ -241,12 +267,19 @@ void show_UI()
     g_signal_connect(LogOut, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(AddCarToRent, "clicked", G_CALLBACK(add_car_to_rent_menu), window);
 
-    gtk_container_add(GTK_CONTAINER(window), grid);
+    gtk_grid_attach(GTK_GRID(Rgrid), Message, 0, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(Rgrid), RentCar, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(Rgrid), AddCarToRent, 1, 1, 1, 1);
 
-    gtk_grid_attach(GTK_GRID(grid), Message, 0, 0, 3, 1);
-    gtk_grid_attach(GTK_GRID(grid), RentCar, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), AddCarToRent, 1, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), LogOut, 2, 1, 1, 1);
+    gtk_box_pack_start(GTK_BOX(Lbox), settings, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(Lbox), account, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(Lbox), yourCars, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(Lbox), rentedCars, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(Lbox), LogOut, TRUE, TRUE, 0);
+
+    gtk_container_add(GTK_CONTAINER(window), grid);
+    gtk_grid_attach(GTK_GRID(grid), Lbox, 0, 0, 1, 6);
+    gtk_grid_attach(GTK_GRID(grid), Rgrid, 1, 0, 3, 6);
 
     gtk_widget_show_all(window);
 

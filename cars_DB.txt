@@ -1,0 +1,3 @@
+Audi,A4,benzina,2006,150,250,1
+Volswagen,Passat,diesel,2002,100,175,1
+Opel,Corsa,diesel,2011,92,100,1

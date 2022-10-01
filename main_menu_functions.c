@@ -6,7 +6,7 @@ void log_in_menu(GtkWidget *irelevant, gpointer widget);
 void sign_up_menu(GtkWidget *irelevant, gpointer widget);
 void show_UI();
 void error();
-void add_car(GtkWidget *irelevant ,gpointer last_window);
+void add_car(GtkWidget *irelevant, gpointer last_window);
 
 GtkWidget *emailEntry, *passEntry, *nameEntry, *lastnameEntry, *yearEntry;
 
@@ -68,6 +68,8 @@ void show_log_in_error()
     GtkWidget *TryAgain = gtk_button_new_with_label("Try again");
     GtkWidget *SignUp = gtk_button_new_with_label("Sign Up");
 
+    //gtk_window_set_focus(GTK_WINDOW(window), GTK_WINDOW(window));
+
     gtk_window_set_title(GTK_WINDOW(window), "Log in ERROR");
     gtk_container_set_border_width(GTK_CONTAINER(window), 50);
     gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
@@ -100,7 +102,7 @@ int valid_data(client_t c)
     return 1;
 }
 
-void add_user(GtkWidget *irelevant , gpointer last_window)
+void add_user(GtkWidget *irelevant, gpointer last_window)
 {
     client_t client;
 
@@ -133,22 +135,30 @@ void add_user(GtkWidget *irelevant , gpointer last_window)
 
 void check_email(GtkWidget *irelevant, gpointer window)
 {
+    gtk_widget_hide(window);
     FILE *file = fopen("client_DB.txt", "r");
 
     const char *email = gtk_entry_get_text(GTK_ENTRY(emailEntry));
     const char *pass = gtk_entry_get_text(GTK_ENTRY(passEntry));
 
-    client_poz = find_pass_email(email);
-    char *passFound = clients[client_poz].pass;
-
-    if (strcmp(pass, passFound) == 0)
+    if (strcmp(pass, "") == 0 || strcmp(email, "") == 0)
     {
-        hide_menu(irelevant, window);
-        g_print("\nLogin OK");
-        show_UI();
+        show_log_in_error();
     }
     else
-        show_log_in_error(window);
+    {
+        client_poz = find_pass_email(email);
+        char *passFound = clients[client_poz].pass;
+
+        if (strcmp(pass, passFound) == 0)
+        {
+            hide_menu(irelevant, window);
+            g_print("\nLogin OK");
+            show_UI();
+        }
+        else
+            show_log_in_error(window);
+    }
     // error types
     /*if (passFound == "")
         g_print("\nEmail Not Found");
@@ -156,28 +166,28 @@ void check_email(GtkWidget *irelevant, gpointer window)
         g_print("\nWrong Password");*/
 }
 
-gboolean on_key_press_logIN (GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
+gboolean on_key_press_logIN(GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
 {
-    if(event->keyval == GDK_KEY_Return)
+    if (event->keyval == GDK_KEY_Return)
     {
         check_email(irelevant, last_window);
     }
-  return FALSE; 
+    return FALSE;
 }
-gboolean on_key_press_signUP (GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
+gboolean on_key_press_signUP(GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
 {
-    if(event->keyval == GDK_KEY_Return)
+    if (event->keyval == GDK_KEY_Return)
     {
         add_user(irelevant, last_window);
     }
-  return FALSE; 
+    return FALSE;
 }
 
-gboolean on_key_press_addCar (GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
+gboolean on_key_press_addCar(GtkWidget *irelevant, GdkEventKey *event, gpointer last_window)
 {
-    if(event->keyval == GDK_KEY_Return)
+    if (event->keyval == GDK_KEY_Return)
     {
         add_car(irelevant, last_window);
     }
-  return FALSE; 
+    return FALSE;
 }
