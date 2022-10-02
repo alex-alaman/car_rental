@@ -56,6 +56,8 @@ client_t add_clients_from_DB()
             case 5:
                 client.b_year = atoi(p);
                 break;
+            case 6:
+                client.client_ID = atoi(p);
             default:
                 break;
             }
@@ -73,7 +75,7 @@ masina_t update_cars_DB()
     FILE *file = fopen("cars_DB.txt", "w");
     file_verification(file);
     for (int i = 1; i <= nr_cars; i++)
-        fprintf(file, "%s,%s,%s,%d,%d,%d\n", masini[i].brand, masini[i].model, masini[i].gas, masini[i].year, masini[i].h_power, masini[i].rent_price);
+        fprintf(file, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", masini[i].brand, masini[i].model, masini[i].gas, masini[i].year, masini[i].h_power, masini[i].rent_price,masini[i].ownerID, masini[i].carID, masini[i].renterID);
     fclose(file);
 }
 
@@ -82,7 +84,8 @@ client_t update_clients_DB()
     FILE *file = fopen("client_DB.txt", "w");
     file_verification(file);
     for (int i = 1; i <= client_nr; i++)
-        fprintf(file, "%s,%s,%s,%s,%d\n", clients[i].name, clients[i].lastname, clients[i].email, clients[i].pass, clients[i].b_year);
+        fprintf(file, "%s,%s,%s,%s,%d,%d\n", clients[i].name, clients[i].lastname, clients[i].email, clients[i].pass, clients[i].b_year,clients[i].client_ID);
+    fflush(file);
     fclose(file);
 }
 
@@ -96,7 +99,7 @@ client_t add_client_to_DB(client_t client)
 {
     FILE *file = fopen("client_DB.txt", "a");
     file_verification(file);
-    fprintf(file, "%s,%s,%s,%s,%d\n", client.name, client.lastname, client.email, client.pass, client.b_year);
+    fprintf(file, "%s,%s,%s,%s,%d,%d\n", client.name, client.lastname, client.email, client.pass, client.b_year, client.client_ID);
     fflush(file);
 }
 
@@ -110,7 +113,7 @@ masina_t add_car_to_DB(masina_t m)
 {
     FILE *file = fopen("cars_DB.txt", "a");
     file_verification(file);
-    fprintf(file, "%s,%s,%s,%d,%d,%d,%d\n", m.brand, m.model, m.gas, m.year, m.h_power, m.rent_price, m.renterID);
+    fprintf(file, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", m.brand, m.model, m.gas, m.year, m.h_power, m.rent_price, m.ownerID, m.carID, m.renterID);
     fflush(file);
 }
 
@@ -148,6 +151,12 @@ masina_t add_cars_from_DB()
                 m.rent_price = atoi(p);
                 break;
             case 7:
+                m.ownerID = atoi(p);
+                break;
+            case 8:
+                m.carID = atoi(p);
+                break;
+            case 9:
                 m.renterID = atoi(p);
                 break;
             default:

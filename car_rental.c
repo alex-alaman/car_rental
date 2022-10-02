@@ -14,6 +14,7 @@ int main(int argc, char* argv[]){
     add_cars_from_DB();
     add_clients_from_DB();
     create_menu(argc, argv);
+    showCarRenters();
     free(masini);
     free(clients);
     return 0;

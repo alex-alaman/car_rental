@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include "main_menu_functions.c"
 #include "client_menu_functions.c"
@@ -120,10 +122,72 @@ void sign_up_menu(GtkWidget *irelevant, gpointer last_window)
     gtk_widget_show_all(window);
 }
 
-void showCars()
+void searchCars_menu(GtkWidget *irelevant, gpointer lastWindow)
 {
-    for(int i=1;i<=nr_cars;i++)
-        afisare_masina(masini[i]);
+    gtk_widget_hide(lastWindow);
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *grid = gtk_grid_new();
+    GtkWidget *brand = gtk_label_new("Brand: ");
+    GtkWidget *model = gtk_label_new("Model: ");
+    GtkWidget *year = gtk_label_new("Year: ");
+    GtkWidget *h_power = gtk_label_new("Horse Power: ");
+    GtkWidget *rent_price = gtk_label_new("Rent Price: ");
+    GtkWidget *gas = gtk_label_new("Gas: ");
+    GtkWidget *back = gtk_button_new_with_label("Back");
+    GtkWidget *search = gtk_button_new_with_label("Search");
+
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_window_set_title(GTK_WINDOW(window), "Search Car");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 100);
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
+    brandEntry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(brandEntry), "Brand");
+    modelEntry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(modelEntry), "Model");
+    yearEntry_min = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(yearEntry_min), "MIN");
+    yearEntry_max = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(yearEntry_max), "MAX");
+    h_powerEntry_min = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(h_powerEntry_min), "MIN");
+    h_powerEntry_max = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(h_powerEntry_max), "MAX");
+    rent_priceEntry_min = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(rent_priceEntry_min), "MIN");
+    rent_priceEntry_max = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(rent_priceEntry_max), "MAX");
+    gasEntry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(gasEntry), "Gas Type");
+
+    g_signal_connect(search, "clicked", G_CALLBACK(searchCars), window);
+    // g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_addCar), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+
+    gtk_grid_attach(GTK_GRID(grid), brand, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), brandEntry, 1, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), model, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), modelEntry, 1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), year, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), yearEntry_min, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), yearEntry_max, 2, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), h_power, 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), h_powerEntry_min, 1, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), h_powerEntry_max, 2, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), rent_price, 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), rent_priceEntry_min, 1, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), rent_priceEntry_max, 2, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gas, 0, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gasEntry, 1, 5, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), back, 1, 6, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), search, 2, 6, 1, 1);
+
+    gtk_widget_show_all(window);
+
+    // g_print("\nAdd a car");
 }
 
 void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
@@ -142,6 +206,8 @@ void rent_car_menu(GtkWidget *irelevant, gpointer lastWindow)
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
     g_signal_connect(back, "clicked", G_CALLBACK(show_menu), lastWindow);
     g_signal_connect(ShowCars, "clicked", G_CALLBACK(showCars), window);
+    g_signal_connect(ShowCars, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(SearchCars, "clicked", G_CALLBACK(searchCars_menu), window);
 
     gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
     gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
@@ -285,4 +351,80 @@ void show_UI()
 
     // g_print("\nsuntem la UI");
     // g_print("\nclient poz:%d", client_poz);
+}
+
+void carChoose_menu()
+{
+    //afisare_masina(searchList[carNumber]);
+    //g_print("car numbers %d", nr_cars_in_list);
+
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *grid = gtk_grid_new();
+    GtkWidget *brand = gtk_label_new("Brand: ");
+    GtkWidget *model = gtk_label_new("Model: ");
+    GtkWidget *year = gtk_label_new("Year: ");
+    GtkWidget *h_power = gtk_label_new("Horse Power: ");
+    GtkWidget *rent_price = gtk_label_new("Rent Price: ");
+    GtkWidget *gas = gtk_label_new("Gas: ");
+    GtkWidget *owner = gtk_label_new("Owner:");
+    GtkWidget *back = gtk_button_new_with_label("Last Car");
+    GtkWidget *choose = gtk_button_new_with_label("Choose Car");
+    GtkWidget *next = gtk_button_new_with_label("Next Car");
+
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+    gtk_window_set_title(GTK_WINDOW(window), "Choose Car to Rent Menu");
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
+    gtk_container_set_border_width(GTK_CONTAINER(window), 100);
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
+    char yearmessage[SIZE], pricemessage[SIZE], powermessage[SIZE], ownermessage[SIZE] = "";
+    sprintf(yearmessage, "%d" ,searchList[carNumber].year);
+    sprintf(pricemessage, "%d" ,searchList[carNumber].rent_price);
+    sprintf(powermessage, "%d" , searchList[carNumber].h_power);
+    
+    strcpy(ownermessage, clients[searchList[carNumber].ownerID].name);
+    strcat(ownermessage , clients[searchList[carNumber].ownerID].lastname);
+
+    GtkWidget *brandtext = gtk_button_new_with_label(searchList[carNumber].brand);
+    GtkWidget *modeltext = gtk_button_new_with_label(searchList[carNumber].model);
+    GtkWidget *yeartext = gtk_button_new_with_label(yearmessage);
+    GtkWidget *h_powertext = gtk_button_new_with_label(powermessage);
+    GtkWidget *rent_pricetext = gtk_button_new_with_label(pricemessage);
+    GtkWidget *gastext = gtk_button_new_with_label(searchList[carNumber].gas);
+    GtkWidget *ownertext = gtk_button_new_with_label(ownermessage);
+
+    g_signal_connect(choose, "clicked", G_CALLBACK(setCarRenter), NULL);
+    g_signal_connect(choose, "clicked", G_CALLBACK(show_UI), NULL);
+    g_signal_connect(choose, "clicked", G_CALLBACK(hide_menu), window);
+    // g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_addCar), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(back, "clicked", G_CALLBACK(decrement), NULL);
+    g_signal_connect(next, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(next, "clicked", G_CALLBACK(increment), NULL);
+    // g_signal_connect(back, "clicked", G_CALLBACK(show_menu), window);
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+
+    gtk_grid_attach(GTK_GRID(grid), brand, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), brandtext, 1, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), model, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), modeltext, 1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), year, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), yeartext, 1, 2, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), h_power, 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), h_powertext, 1, 3, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), rent_price, 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), rent_pricetext, 1, 4, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), gas, 0, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gastext, 1, 5, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), owner, 0, 6, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), ownertext, 1, 6, 2, 1);
+    if (carNumber > 1)
+        gtk_grid_attach(GTK_GRID(grid), back, 0, 7, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), choose, 1, 7, 1, 1);
+    if (carNumber < nr_cars_in_list)
+        gtk_grid_attach(GTK_GRID(grid), next, 2, 7, 1, 1);
+
+    gtk_widget_show_all(window);
 }

@@ -111,6 +111,7 @@ void add_user(GtkWidget *irelevant, gpointer last_window)
     strcpy(client.email, gtk_entry_get_text(GTK_ENTRY(emailEntry)));
     strcpy(client.lastname, gtk_entry_get_text(GTK_ENTRY(lastnameEntry)));
     client.b_year = atoi(gtk_entry_get_text(GTK_ENTRY(yearEntry)));
+    client.client_ID = client_nr + 1;
     if (valid_data(client))
     {
         if (find_pass_email(client.email) == -1)
@@ -153,7 +154,7 @@ void check_email(GtkWidget *irelevant, gpointer window)
         if (strcmp(pass, passFound) == 0)
         {
             hide_menu(irelevant, window);
-            g_print("\nLogin OK");
+            //g_print("\nLogin OK");
             show_UI();
         }
         else

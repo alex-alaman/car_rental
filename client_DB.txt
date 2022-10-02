@@ -1,5 +1,3 @@
-Alex,alaman,alexa,1234,2003
-adrian,betea,adrianbetea,123,2002
-Curta,Paula,curtapaula,paula1,2003
-Curta,Razvan,curtarazvan,razvan1,1974
-Curta,Cristina,cristinacurta,cristina1,1998
+Alex,Alaman,alexa,1234,2003,1
+Curta,Paula,curtapaula,1234,2003,2
+Betea,Adrian,adrianbetea,1234,2004,3

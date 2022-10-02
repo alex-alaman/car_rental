@@ -1,4 +1,4 @@
-#include <gtk/gtk.h>
+/* #include <gtk/gtk.h>
 
 int main(int argc, char *argv[]) {
 
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   gtk_widget_set_vexpand(window, TRUE);
   vbox = gtk_box_new(TRUE, 1);
   gtk_container_add(GTK_CONTAINER(window), grid);
-  
+
   settings = gtk_button_new_with_label("Settings");
   accounts = gtk_button_new_with_label("Accounts");
   loans = gtk_button_new_with_label("Loans");
@@ -54,4 +54,71 @@ int main(int argc, char *argv[]) {
   gtk_main();
 
   return 0;
+} */
+
+/* #include <stdio.h>
+#include <time.h>
+int main()
+{
+  time_t rawtime;
+  struct tm *info;
+  time(&rawtime);
+  info = localtime(&rawtime);
+  printf("day : %d \n",info->tm_mday);
+  printf("month: %d \n", info->tm_mon);
+  printf("year: %d\n",1900 + info->tm_year);
+  printf("Current local time and date: %s", asctime(info));
+  return (0);
+} */
+/* #include <stdio.h>
+#include <string.h>
+
+int main()
+{
+  char c[20] = "";
+  if (strcmp(c, "")==0)
+    printf("da");
+  else
+    printf("nu");
+} */
+
+#include <gtk/gtk.h>
+
+/* void buttonFunction(GtkWidget * widget, gpointer data, int & n){
+    n = 1;
 }
+ */
+
+void buttonFunction (GtkButton *button, gpointer user_data) /* No extra parameter here ! */
+{
+    /* you cast to the type of what you passed as last argument of g_signal_connect */ 
+    int *pn = user_data; 
+    *pn = 1;
+    g_print("%d", 1 + *pn);
+}
+
+int main (int argc, char **argv)
+{
+    int n = 0;
+    GtkWidget *window;
+    GtkWidget *button; 
+
+    gtk_init (&argc,&argv);
+
+    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    button = gtk_button_new_with_label ("Osss");
+
+    gtk_container_add (GTK_CONTAINER(window), button);
+    gtk_widget_show_all (window);
+
+    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    /* Here's the magic: you pass a pointer to the variable you'd like to modify
+     * in the callback, be it a simple variable or a struct */
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(buttonFunction), &n);
+
+    gtk_main();
+
+    return 0;
+}
+
