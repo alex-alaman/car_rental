@@ -2,6 +2,7 @@
 #include "functii.c"
 #include "menu.c"
 
+
 int create_menu(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
@@ -13,8 +14,10 @@ int create_menu(int argc, char *argv[])
 int main(int argc, char* argv[]){
     add_cars_from_DB();
     add_clients_from_DB();
+    add_rent_from_DB();
     create_menu(argc, argv);
     showCarRenters();
+    update_rent_DB();
     free(masini);
     free(clients);
     return 0;

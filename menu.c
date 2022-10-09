@@ -292,8 +292,9 @@ void add_car_to_rent_menu(GtkWidget *irelevant, gpointer lastWindow)
 
 void show_UI()
 {
+    carNumber = 1;
     char message[100] = "Hello there ";
-    strcat(message, clients[client_poz].name);
+    strcat(message, clients[ClientID].name);
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *Rgrid = gtk_grid_new();
@@ -350,14 +351,39 @@ void show_UI()
     gtk_widget_show_all(window);
 
     // g_print("\nsuntem la UI");
-    // g_print("\nclient poz:%d", client_poz);
+    // g_print("\nclient poz:%d", ClientID);
 }
+
+void setRentTime()
+{
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *box = gtk_box_new(TRUE, 1);
+    GtkWidget *message = gtk_label_new("Choose last day of rent");
+    GtkWidget *calendar = gtk_calendar_new();
+    GtkWidget *chooseDay = gtk_button_new_with_label("Choose");
+
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
+    gtk_window_set_title(GTK_WINDOW(window), "Day Choose");
+    gtk_container_set_border_width(GTK_CONTAINER(window), 10);
+    
+    g_signal_connect(chooseDay, "clicked", G_CALLBACK(calendar_day_set), calendar);
+    g_signal_connect(chooseDay, "clicked", G_CALLBACK(hide_menu), window);
+    g_signal_connect(chooseDay, "clicked", G_CALLBACK(show_UI), NULL);
+
+    g_signal_connect(window, "destroy", G_CALLBACK(destroy), NULL);
+
+    gtk_box_pack_start(GTK_BOX(box), message, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(box), calendar, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(box), chooseDay, TRUE, TRUE, 0);
+    gtk_container_add(GTK_CONTAINER(window), box);
+
+    gtk_widget_show_all(window);
+}
+
 
 void carChoose_menu()
 {
-    //afisare_masina(searchList[carNumber]);
-    //g_print("car numbers %d", nr_cars_in_list);
-
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *grid = gtk_grid_new();
     GtkWidget *brand = gtk_label_new("Brand: ");
@@ -380,12 +406,14 @@ void carChoose_menu()
     gtk_container_add(GTK_CONTAINER(window), grid);
 
     char yearmessage[SIZE], pricemessage[SIZE], powermessage[SIZE], ownermessage[SIZE] = "";
-    sprintf(yearmessage, "%d" ,searchList[carNumber].year);
-    sprintf(pricemessage, "%d" ,searchList[carNumber].rent_price);
-    sprintf(powermessage, "%d" , searchList[carNumber].h_power);
-    
+    sprintf(yearmessage, "%d", searchList[carNumber].year);
+    sprintf(pricemessage, "%d", searchList[carNumber].rent_price);
+    strcat(pricemessage, "/day");
+    sprintf(powermessage, "%d", searchList[carNumber].h_power);
+    strcat(powermessage, " hp");
+
     strcpy(ownermessage, clients[searchList[carNumber].ownerID].name);
-    strcat(ownermessage , clients[searchList[carNumber].ownerID].lastname);
+    strcat(ownermessage, clients[searchList[carNumber].ownerID].lastname);
 
     GtkWidget *brandtext = gtk_button_new_with_label(searchList[carNumber].brand);
     GtkWidget *modeltext = gtk_button_new_with_label(searchList[carNumber].model);
@@ -395,8 +423,8 @@ void carChoose_menu()
     GtkWidget *gastext = gtk_button_new_with_label(searchList[carNumber].gas);
     GtkWidget *ownertext = gtk_button_new_with_label(ownermessage);
 
-    g_signal_connect(choose, "clicked", G_CALLBACK(setCarRenter), NULL);
-    g_signal_connect(choose, "clicked", G_CALLBACK(show_UI), NULL);
+    g_signal_connect(choose, "clicked", G_CALLBACK(setRentTime), NULL);
+    
     g_signal_connect(choose, "clicked", G_CALLBACK(hide_menu), window);
     // g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press_addCar), window);
     g_signal_connect(back, "clicked", G_CALLBACK(hide_menu), window);

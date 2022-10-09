@@ -1,4 +1,7 @@
 Volswagen,Passat,Benzina,2002,150,200,1,1,-1
-Volswagen,Golf,Benzina,2010,105,150,1,2,-1
-Opel,Corsa,Diesel,2011,90,120,2,3,-1
-Audi,A4,Benzina,2015,200,250,3,4,1
+Volswagen,Golf,Benzina,2010,105,150,1,2,2
+Opel,Corsa,Diesel,2011,90,120,2,3,1
+Audi,A4,Benzina,2015,200,250,3,4,-1
+Audi,A1,Diesel,2016,105,225,3,5,-1
+BMW,e50,Diesel,2003,160,175,4,6,1
+Mercedes,C-Class,Benzina,2020,230,300,5,7,-1

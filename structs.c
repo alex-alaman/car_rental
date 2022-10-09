@@ -19,10 +19,12 @@ typedef struct masina_t
     char gas[SIZE];
     int ownerID;
     int renterID;
-    int carID; //car poz
+    int carID; // car poz
     int year;
     int h_power;
     int rent_price;
+    rent_time rentStart;
+    rent_time rentEnd;
 } masina_t;
 
 typedef struct client_t

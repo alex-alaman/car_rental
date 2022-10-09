@@ -8,6 +8,7 @@ void show_UI();
 void error();
 void add_car(GtkWidget *irelevant, gpointer last_window);
 
+
 GtkWidget *emailEntry, *passEntry, *nameEntry, *lastnameEntry, *yearEntry;
 
 void show_menu(GtkWidget *irelavant, gpointer widget)
@@ -148,11 +149,12 @@ void check_email(GtkWidget *irelevant, gpointer window)
     }
     else
     {
-        client_poz = find_pass_email(email);
-        char *passFound = clients[client_poz].pass;
+        ClientID = find_pass_email(email);
+        char *passFound = clients[ClientID].pass;
 
         if (strcmp(pass, passFound) == 0)
         {
+            g_print("client ID: %d", ClientID);
             hide_menu(irelevant, window);
             //g_print("\nLogin OK");
             show_UI();

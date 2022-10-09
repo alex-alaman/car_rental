@@ -1,3 +1,5 @@
 Alex,Alaman,alexa,1234,2003,1
 Curta,Paula,curtapaula,1234,2003,2
 Betea,Adrian,adrianbetea,1234,2004,3
+Curta,Razvan,curtarazvan,1234,1986,4
+Bity,Stefan,bitistefan,1234,2001,5

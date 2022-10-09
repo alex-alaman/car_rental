@@ -1,6 +1,1 @@
-client page to be made
-nu mai citi de pe baza de date decat la inceputul programului
-la sf programului trece toate arrayurile in baza de date
-== sa adaugi client/ masina in baza de date la citire si in caz de modificari ale clientului se va citii linii pana la client_poz si se va
-modifica in baza de date
-afisare nume client la log in
+pe calendar, in timpul alegerii datei, a se atasa un meniu cu totalul pretului

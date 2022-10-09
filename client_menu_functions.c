@@ -6,11 +6,35 @@ GtkWidget *yearEntry_max, *h_powerEntry_max, *rent_priceEntry_max;
 
 void add_car_search_list(masina_t m);
 void carChoose_menu();
+void  update_rent_DB();
+void add_rent_to_DB(masina_t m,rent_time Start, rent_time End);
+void setCarRenter();
 
 masina_t *searchList;
 int nr_cars_in_list;
-
 int carNumber = 1;
+
+void calendar_day_set(GtkWidget *widget, gpointer calendar)
+{
+
+    time_t rawtime;
+    struct tm *info;
+    time(&rawtime);
+    info = localtime(&rawtime);
+
+    rent_time dayStart, dayEnd;
+    dayStart.day = info->tm_mday;
+    dayStart.month = info->tm_mon+1;
+    dayStart.year = info->tm_year + 1900;
+    
+    gtk_calendar_get_date(GTK_CALENDAR(calendar), &dayEnd.year, &dayEnd.month, &dayEnd.day);
+    dayEnd.month += 1;
+
+    masini[searchList[carNumber].carID].rentStart = dayStart;
+    masini[searchList[carNumber].carID].rentEnd = dayEnd;
+
+    setCarRenter();
+}
 
 void increment()
 {
@@ -26,7 +50,7 @@ void decrement()
 
 void setCarRenter()
 {
-    masini[searchList[carNumber].carID].renterID = clients[client_poz].client_ID;
+    masini[searchList[carNumber].carID].renterID = clients[ClientID].client_ID;
     update_cars_DB();
 }
 
@@ -41,10 +65,11 @@ void showCarRenters(){
 void showCars()
 {
     nr_cars_in_list = 0;
+    //g_print("\ncars nr: %d", nr_cars);
     for (int i = 1; i <= nr_cars; i++)
-        if (masini[i].ownerID != clients[client_poz].client_ID && masini[i].renterID == -1)
+        if (masini[i].ownerID != clients[ClientID].client_ID && masini[i].renterID == -1)
         {
-          //  g_print("\ncars nr: %d", nr_cars_in_list);
+            //g_print("\ncars nr: %d", nr_cars_in_list);
             nr_cars_in_list += 1;
             add_car_search_list(masini[i]);
         }
@@ -90,7 +115,7 @@ void add_car(GtkWidget *irelevant, gpointer last_window)
     m.year = atoi(gtk_entry_get_text(GTK_ENTRY(yearEntry)));
     m.h_power = atoi(gtk_entry_get_text(GTK_ENTRY(h_powerEntry)));
     m.rent_price = atoi(gtk_entry_get_text(GTK_ENTRY(rent_priceEntry)));
-    m.ownerID = client_poz;
+    m.ownerID = ClientID;
     m.carID = nr_cars + 1;
     m.renterID = -1;
     if (valid(m))
@@ -132,7 +157,7 @@ void searchCars()
 
     for (int i = 1; i <= nr_cars; i++)
     {
-        if (masini[i].ownerID != clients[client_poz].client_ID && masini[i].ownerID == 0)
+        if (masini[i].ownerID != clients[ClientID].client_ID && masini[i].renterID == -1)
             if (strcmp(masini[i].brand, min.brand) == 0 || strcmp(min.brand, "") == 0)
                 if (strcmp(masini[i].model, min.model) == 0 || strcmp(min.model, "") == 0)
                     if (strcmp(masini[i].gas, min.gas) == 0 || strcmp(min.gas, "") == 0)
